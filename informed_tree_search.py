@@ -1,16 +1,21 @@
 import math
+import cv2
+import numpy as np
+import numpy.typing as npt
 
 
-class AradBucarest:
+class BusquedaRutaImg:
     """
     las siguientes funciones definen al problema. Si se quiere usar el mismo algoritmo en este
     código para resolver otro problema, se plantea el nuevo problema con las mismas 6 funciones,
     con el mismo nombre.
     """
 
-    def __init__(self, ruta_objetivo):
-        self.estado_inicial = ruta_objetivo[0]
-        self.objetivo = ruta_objetivo[1]
+    def __init__(self, img_path: str):
+        self.hilo = self._crear_hilo_desde_img(cv2.imread(img_path, cv2.IMREAD_COLOR))
+        self.inicio = self.hilo[0, 0]
+        self.objetivo = self.hilo[255, 255]
+
         self.ciudades = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "L", "M", "N", "O", "P", "R", "S", "T", "U", "V",
                          "Z"]
         self.sucesores = [["T", "S", "Z"], ["F", "G", "P", "U"], ["D", "P", "R"], ["C", "M"], ["H"], ["B", "S"], ["B"],
@@ -22,6 +27,19 @@ class AradBucarest:
         print("En esta ocasión se busca el camino:")
         self.en_pantalla(self.estado_inicial)
         self.en_pantalla(self.objetivo)
+
+    def _crear_hilo_desde_img(self, img_matriz_3d: npt.NDArray) -> npt.NDArray:
+        """
+        Toma una matriz 3d ndarray de valores rgb  y los transforma en una matriz 2d
+        ndarray con valor 1 cuando el rgb es 0,0,0 y 0 cuando el rgb es 255,255,255
+        """
+        nueva_matriz_2d = []
+
+        for img_matriz_2d in img_matriz_3d:
+            nueva_lista = [1 if img_lista.sum() == 0 else 0 for img_lista in img_matriz_2d]
+            nueva_matriz_2d.append(nueva_lista)
+
+        return np.array(nueva_matriz_2d, np.int32)
 
     def en_pantalla(self, estado):
         if estado == self.objetivo:
@@ -39,13 +57,15 @@ class AradBucarest:
         return self.sucesores[self.ciudades.index(estado)]
 
     def costo_entre_dos(self, estado1, estado2):
-        i = self.ciudades.index(estado1)
-        j = self.sucesores[i].index(estado2)
-        return self.costos_ind[i][j]
+        ciudad_actual_index = self.ciudades.index(estado1)
+        sucesor_index = self.sucesores[ciudad_actual_index].index(estado2)
+
+        return self.costos_ind[ciudad_actual_index][sucesor_index]
 
     def distancia_al_objetivo(self, estado):
         i = self.ciudades.index(estado)
         j = self.ciudades.index(self.objetivo)
+
         coordenadas = [[44.82029, 279.40248], [401.54287, 90.12111], [230.46163, 43.40744], [129.14757, 57.96755],
                        [585.97086, 48.86748], [292.34208, 231.47547], [371.20931, 24.60064], [554.42397, 114.99463],
                        [485.87014, 295.7826], [129.75424, 148.36153], [132.18092, 103.46788], [408.21625, 331.57619],
@@ -55,6 +75,7 @@ class AradBucarest:
         x2 = coordenadas[j][0]
         y1 = coordenadas[i][1]
         y2 = coordenadas[j][1]
+
         return math.sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2))
 
 
@@ -111,7 +132,7 @@ print("3: Búsqueda primero el mejor, por costos")
 print("4: Búsqueda A*")
 E = input("Tu elección: ")
 ######## Inicia el problema a solucionar
-problema = Arad_Bucarest([A, B])
+problema = 0  # AradBucarest([A, B])
 
 ####### INICIA PROCEDIMIENTO DE BÚSQUEDA
 # esta lista guarda estados ya vistos
