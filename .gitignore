@@ -1,0 +1,26 @@
+# entornos de desarrollo
+*-workspace
+.vscode/
+.idea/
+
+# archivos de caché generados por python
+__pycache__/
+
+# entorno virtual
+venv/
+
+# archivos de log
+log/
+
+# archivos de configuracion
+*.ini
+*.yaml
+
+# archivo generado por comando nohup(no detener app tras cierre de conexion SSH)
+*.out
+
+# documentacion swagger
+!static/Swagger/openapi.yaml
+
+# carpeta de documentacion
+html/
