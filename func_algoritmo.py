@@ -1,8 +1,5 @@
 # Funciones que se necesitan para el algoritmo de búsqueda
 
-from traceback import print_tb
-
-
 def hacer_nodo(
     estado: tuple[int, int], 
     distancia_al_objetivo: float, 
